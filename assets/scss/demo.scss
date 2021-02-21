@@ -1,0 +1,11 @@
+@import './variables';
+
+body {
+  background-color: $primary;
+  background-image: url('~assets/img/demo.png');
+  font-family: 'Noto Sans TC', sans-serif;
+}
+
+h2 {
+  @extend %clearfix;
+}
