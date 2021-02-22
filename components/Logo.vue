@@ -19,22 +19,22 @@
 </template>
 
 <style lang="scss">
-p {
-  background: linear-gradient(to bottom, #fff, #000);
-  display: grid;
-  transform: translate(5px, 20px);
-  transition: all 0.5s;
-  user-select: none;
-}
+// p {
+//   background: linear-gradient(to bottom, #fff, #000);
+//   display: grid;
+//   transform: translate(5px, 20px);
+//   transition: all 0.5s;
+//   user-select: none;
+// }
 
-.nuxt-logo {
-  animation: 1s appear;
-  margin: auto;
-}
+// .nuxt-logo {
+//   animation: 1s appear;
+//   margin: auto;
+// }
 
-@keyframes appear {
-  0% {
-    opacity: 0;
-  }
-}
+// @keyframes appear {
+//   0% {
+//     opacity: 0;
+//   }
+// }
 </style>

@@ -1,2 +1,47 @@
 @import './variables';
-@import '~bulma'
+// @import '~bulma';
+@import '~bulma/sass/utilities/all';
+@import '~bulma/sass/base/all';
+@import '~bulma/sass/elements/all';
+@import '~bulma/sass/form/all';
+@import '~bulma/sass/components/all';
+
+*,
+::after,
+::before {
+  border: 0 solid #e5e7eb;
+}
+
+.button {
+  height: auto;
+
+  &.is-primary {
+    background-color: $primary;
+  
+    &:hover {
+      background-color: transparent;
+      border-color: $primary;
+      color: $primary;
+    }
+  }
+
+  &.is-primary.is-outlined {
+    background-color: transparent;
+    border-color: $primary;
+    color: $primary;
+  
+    &:hover {
+      background-color: $primary;
+      border-color: $primary;
+      color: #fff;
+    }
+  }
+}
+
+.visibility-hidden {
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  width: 1px;
+  z-index: -1;
+}
