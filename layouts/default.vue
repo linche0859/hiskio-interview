@@ -8,6 +8,7 @@
     <ModalLogin
       v-model="modal.status"
       :action="modal.action"
+      @login="login"
     />
   </div>
 </template>
@@ -39,6 +40,22 @@ export default {
     }
   },
   methods: {
+    async login (data) {
+      try {
+        await this.$store.dispatch('loginMember', {
+          account: data.id,
+          password: data.password
+        })
+        // this.changeModalStatus()
+      } catch (e) {
+        if (typeof e.message === 'string') {
+          alert(e.message)
+          return
+        }
+        const { message: { account = '', password = '' } } = e
+        alert(account || password)
+      }
+    },
     /**
      * 變更 modal 的狀態
      * @param {string} action - 操作動作

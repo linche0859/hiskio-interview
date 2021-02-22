@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar fixed w-full" role="navigation" aria-label="main navigation">
+  <nav class="navbar container fixed -inset-x-0 mx-auto" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <nuxt-link to="/" class="navbar-item md:pl-4 md:pr-8">
         <img src="~/assets/img/logo.svg">

@@ -96,6 +96,7 @@
             :class="[{'hidden': currentAction !== 'login'}, {'block': currentAction === 'login'}]"
             class="button is-primary block w-full"
             value="登入"
+            @click="$emit('login', form)"
           >
         </div>
         <a
