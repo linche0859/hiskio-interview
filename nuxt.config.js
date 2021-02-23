@@ -63,10 +63,14 @@ export default {
     // icon 的標籤使用 <fa>
     component: 'fa',
     imports: [
-      // 引入 fas 所有的icon
+      // 引入 fas 所有的 icon
       {
         set: '@fortawesome/free-solid-svg-icons',
         icons: ['fas']
+      },
+      {
+        set: '@fortawesome/free-regular-svg-icons',
+        icons: ['far']
       }
     ]
   },

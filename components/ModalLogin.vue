@@ -148,6 +148,9 @@ export default {
     }
   },
   watch: {
+    value (status) {
+      Object.assign(this.form, this.$options.data().form)
+    },
     action (newAction) {
       this.currentAction = newAction
     }

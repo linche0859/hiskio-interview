@@ -3,8 +3,11 @@
     <Navbar
       @login="changeModalStatus"
       @register="changeModalStatus"
+      @logout="logout"
     />
-    <Nuxt />
+    <main class="main">
+      <Nuxt />
+    </main>
     <ModalLogin
       v-model="modal.status"
       :action="modal.action"
@@ -34,19 +37,23 @@ export default {
      */
     return {
       modal: {
-        status: true,
+        status: false,
         action: 'login'
       }
     }
   },
   methods: {
+    /**
+     * 登入事件
+     * @param {object} data - 登入資訊
+     */
     async login (data) {
       try {
-        await this.$store.dispatch('loginMember', {
+        await this.$store.dispatch('login', {
           account: data.id,
           password: data.password
         })
-        // this.changeModalStatus()
+        this.changeModalStatus()
       } catch (e) {
         if (typeof e.message === 'string') {
           alert(e.message)
@@ -55,6 +62,12 @@ export default {
         const { message: { account = '', password = '' } } = e
         alert(account || password)
       }
+    },
+    /**
+     * 登出事件
+     */
+    logout () {
+      this.$store.dispatch('logout', {})
     },
     /**
      * 變更 modal 的狀態
@@ -68,4 +81,8 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.main {
+  padding-top: 52px;
+}
+</style>
