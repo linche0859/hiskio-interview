@@ -32,6 +32,6 @@ export default {
   top: 0;
   transition: right 0.3s;
   width: 100%;
-  z-index: 1;
+  z-index: 31;
 }
 </style>

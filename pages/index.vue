@@ -42,6 +42,11 @@ export default {
       courseList: []
     }
   },
+  fetch (context) {
+    if (context.store.getters.isUserLoggedIn) {
+      return context.store.dispatch('cart/getUserCart')
+    }
+  },
   head () {
     return {
       title: '首頁'

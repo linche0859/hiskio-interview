@@ -4,6 +4,8 @@
       @login="changeModalStatus"
       @register="changeModalStatus"
       @logout="logout"
+      @change-aside-logged-in-status="asideLoggedInStatus = !asideLoggedInStatus"
+      @change-aside-cart-status="asideCartStatus = !asideCartStatus"
     />
     <main class="main">
       <Nuxt />
@@ -13,12 +15,21 @@
       :action="modal.action"
       @login="login"
     />
+    <AsideLoggedIn
+      v-model="asideLoggedInStatus"
+      @logout="logout"
+    />
+    <AsideCart
+      v-model="asideCartStatus"
+    />
   </div>
 </template>
 
 <script>
 import Navbar from '~/components/Navbar'
 import ModalLogin from '~/components/ModalLogin'
+import AsideLoggedIn from '~/components/AsideLoggedIn'
+import AsideCart from '~/components/AsideCart'
 
 /**
  * 預設的 layout 模板
@@ -26,20 +37,41 @@ import ModalLogin from '~/components/ModalLogin'
 export default {
   components: {
     Navbar,
-    ModalLogin
+    ModalLogin,
+    AsideLoggedIn,
+    AsideCart
   },
   data () {
     /**
      * @namespace
+     * @property {boolean} asideLoggedInStatus - 已經登入帳戶側邊欄的顯示狀態
+     * @property {boolean} asideCartStatus - 購物車側邊欄的顯示狀態
      * @property {object} modal - modal 資訊
      * @property {boolean} modal.status - 顯示狀態
      * @property {string} modal.action - 操作動作
      */
     return {
+      asideLoggedInStatus: false,
+      asideCartStatus: false,
       modal: {
         status: false,
         action: 'login'
       }
+    }
+  },
+  computed: {
+    /**
+     * 使用者是否登入
+     * @returns {boolean}
+     */
+    isUserLoggedIn () {
+      return this.$store.getters.isUserLoggedIn
+    }
+  },
+  watch: {
+    isUserLoggedIn (loggedIn) {
+      this.asideLoggedInStatus = false
+      this.asideCartStatus = false
     }
   },
   methods: {
@@ -53,6 +85,8 @@ export default {
           account: data.id,
           password: data.password
         })
+        await this.$store.dispatch('getUserInfo')
+        await this.$store.dispatch('cart/getUserCart')
         this.changeModalStatus()
       } catch (e) {
         if (typeof e.message === 'string') {
@@ -66,8 +100,9 @@ export default {
     /**
      * 登出事件
      */
-    logout () {
-      this.$store.dispatch('logout', {})
+    async logout () {
+      await this.$store.dispatch('logout', {})
+      await this.$store.dispatch('cart/getUserCart')
     },
     /**
      * 變更 modal 的狀態

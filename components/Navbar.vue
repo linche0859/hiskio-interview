@@ -13,11 +13,12 @@
         >
       </div>
       <div class="flex items-center ml-auto">
-        <a class="navbar-item lg:hidden" @click="cartExpand = !cartExpand">
+        <a class="navbar-item lg:hidden" @click="$emit('change-aside-cart-status')">
           <fa
             :icon="['fas', 'shopping-cart']"
             :class="[{'text-gray-400': !cartInfo.data.length}, {'text-primary': cartInfo.data.length}]"
           />
+          <span class="badge" />
         </a>
         <!-- 漢堡選單 -->
         <a
@@ -52,11 +53,12 @@
         <a v-if="isUserLoggedIn" class="navbar-item">
           我的課程
         </a>
-        <a class="navbar-item hidden lg:flex" @click="cartExpand = !cartExpand">
+        <a class="navbar-item hidden lg:flex" @click="$emit('change-aside-cart-status')">
           <fa
             :icon="['fas', 'shopping-cart']"
             :class="[{'text-gray-400': !cartInfo.data.length}, {'text-primary': cartInfo.data.length}]"
           />
+          <span class="badge" />
         </a>
         <a class="navbar-item">
           <span class="inline-block lg:hidden">常見問題</span>
@@ -65,7 +67,7 @@
         <a
           v-if="isUserLoggedIn"
           class="navbar-item hidden lg:flex"
-          @click="accountExpand = !accountExpand"
+          @click="$emit('change-aside-logged-in-status')"
         >
           <img :src="userInfo.avatar" alt="avatar" class="w-8 h-8 rounded-full object-cover">
         </a>
@@ -94,118 +96,22 @@
         </div>
       </div>
     </div>
-    <!-- 已登入的帳號側邊選單 -->
-    <aside-component
-      v-if="isUserLoggedIn"
-      v-model="accountExpand"
-      class="aside-menu"
-    >
-      <button
-        class="button block ml-auto mb-6 border-0 shadow-none"
-        @click="accountExpand = !accountExpand"
-      >
-        <fa :icon="['fas', 'times']" class="text-2xl text-gray-500" />
-      </button>
-      <div class="mb-6">
-        <img :src="userInfo.avatar" alt="avatar" class="block mx-auto w-36 h-36 rounded-full object-cover">
-      </div>
-      <p class="pb-10 border-b text-center text-2xl">
-        {{ userInfo.username }}
-      </p>
-      <ul class="list-none">
-        <li><a href="javascript:;" class="block py-4 text-center text-xl text-primary hover:bg-gray-100">我的抵用券</a></li>
-        <li><a href="javascript:;" class="block py-4 text-center text-xl text-primary hover:bg-gray-100">任務版</a></li>
-        <li><a href="javascript:;" class="block py-4 text-center text-xl text-primary hover:bg-gray-100">訂單紀錄</a></li>
-        <li><a href="javascript:;" class="block py-4 text-center text-xl text-primary hover:bg-gray-100">帳戶設定</a></li>
-      </ul>
-      <a
-        href="javascript:;"
-        class="absolute block left-0 bottom-6 w-full text-center text-xl text-gray-400"
-        @click="$emit('logout')"
-      >
-        會員登出
-      </a>
-    </aside-component>
-    <!-- 購物車側邊選單 -->
-    <aside-component
-      v-model="cartExpand"
-    >
-      <header class="relative mb-6 z-10">
-        <h2 class="text-center">
-          購物車
-        </h2>
-        <button
-          class="button absolute top-0 right-0 py-0 border-0 shadow-none"
-          @click="cartExpand = !cartExpand"
-        >
-          <fa :icon="['fas', 'times']" class="text-2xl text-gray-500" />
-        </button>
-      </header>
-      <div
-        v-if="!cartInfo.data.length"
-        class="absolute -inset-0 flex justify-center items-center flex-col"
-      >
-        <img src="~/assets/img/bg-empty-cart.svg" class="mb-10 w-3/4" alt="empty cart">
-        <p class="mb-10 text-center text-sm text-gray-400">
-          購物車裡是空的，<br>去逛逛喜歡的課程吧！
-        </p>
-        <button class="button is-primary w-48">
-          前往探索課程
-        </button>
-      </div>
-      <ul v-else class="px-2 list-none">
-        <li
-          v-for="item in cartInfo.data"
-          :key="item.id"
-          class="flex items-center mb-2 pb-2 border-b"
-        >
-          <img :src="item.image" :alt="item.name" class="block mb-0 mr-2 w-36 w-20 rounded-lg object-cover">
-          <div class="mr-2">
-            <p class="mb-4 overflow-ellipsis overflow-hidden line-clamp-2">
-              {{ item.name }}
-            </p>
-            <p class="font-bold text-red-500">
-              $ {{ item.total }}
-              <span>募資課程</span>
-            </p>
-          </div>
-          <fa :icon="['fas', 'trash']" class="self-start text-xl text-gray-300 cursor-pointer hover:text-red-500" />
-        </li>
-      </ul>
-      <a
-        v-if="cartInfo.data.length"
-        href="javascript:;"
-        class="button is-primary absolute inset-x-0 bottom-0 py-4 text-lg rounded-none"
-      >
-        <fa :icon="['fas', 'shopping-cart']" class="mr-4" />
-        前往購物車
-      </a>
-    </aside-component>
   </nav>
 </template>
 
 <script>
-import AsideComponent from '~/components/Aside'
-
 /**
  * 導覽列
  */
 export default {
   name: 'Navbar',
-  components: {
-    AsideComponent
-  },
   data () {
     /**
      * @namespace
      * @property {boolean} expand - 是否展開導覽選單
-     * @property {boolean} accountExpand - 電腦版的是否展開帳號側邊選單
-     * @property {boolean} cartExpand - 是否展開購物車側邊選單
      */
     return {
-      expand: false,
-      accountExpand: false,
-      cartExpand: false
+      expand: false
     }
   },
   computed: {
@@ -234,8 +140,6 @@ export default {
   watch: {
     isUserLoggedIn (loggedIn) {
       this.expand = false
-      this.accountExpand = false
-      this.cartExpand = false
     }
   }
 }
@@ -299,27 +203,17 @@ export default {
   }
 }
 
-// 已登入的側邊選單
-.aside-menu {
-  img {
-    border: 1px solid $primary;
-    padding: 0.25rem;
-  }
-}
-
 // 購物車有商品時的顯示
-.fa-shopping-cart.text-primary {
-  position: relative;
-
-  &::after {
-    background-color: #f00;
-    border-radius: 50%;
-    content: '';
-    height: 0.25rem;
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 0.25rem;
+.fa-shopping-cart.text-primary + .badge {
+  background-color: #f00;
+  border-radius: 50%;
+  height: 6px;
+  position: absolute;
+  right: 12px;
+  top: 8px;
+  width: 6px;
+  @media (min-width: $desktop) {
+    top: 17px;
   }
 }
 </style>

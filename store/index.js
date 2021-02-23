@@ -69,7 +69,7 @@ export const mutations = {
 }
 
 export const actions = {
-  nuxtServerInit ({ commit }, context) {
+  nuxtServerInit ({ commit, dispatch }, context) {
     if (context.app.$cookies.get('access_token')) {
       const accessToken = context.app.$cookies.get('access_token')
       const tokenType = context.app.$cookies.get('token_type')
@@ -80,6 +80,19 @@ export const actions = {
       commit('SET_USER_INFO', { username, avatar })
     }
   },
+  async getUserInfo ({ commit, getters }) {
+    try {
+      const { data } = await this.$axios({
+        baseURL: process.env.WEB_URL,
+        url: '/api/me',
+        method: 'get',
+        params: { ...getters.token }
+      })
+      commit('SET_USER_INFO', data)
+    } catch (e) {
+      return Promise.reject(e)
+    }
+  },
   async login ({ commit }, payload) {
     try {
       const { data: loginData } = await this.$axios({
@@ -88,15 +101,7 @@ export const actions = {
         method: 'post',
         data: payload
       })
-      const { data: memberData } = await this.$axios({
-        baseURL: process.env.WEB_URL,
-        url: '/api/me',
-        method: 'get',
-        params: { accessToken: loginData.access_token, tokenType: loginData.token_type }
-      })
       commit('SET_USER_LOGGEDIN', loginData)
-      commit('SET_USER_INFO', memberData)
-      return memberData
     } catch (e) {
       return Promise.reject(e)
     }
