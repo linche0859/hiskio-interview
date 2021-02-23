@@ -36,9 +36,9 @@
           <p class="mb-4 overflow-ellipsis overflow-hidden line-clamp-2">
             {{ item.name }}
           </p>
-          <p class="font-bold text-red-500">
-            $ {{ item.total }}
-            <span>募資課程</span>
+          <p>
+            <span class="mr-2 font-bold text-red-500">$ {{ item.total }}</span>
+            <span class="px-1 border border-gray-500 rounded">募資課程</span>
           </p>
         </div>
         <fa :icon="['fas', 'trash']" class="self-start text-xl text-gray-300 cursor-pointer hover:text-red-500" />

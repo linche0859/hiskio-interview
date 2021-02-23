@@ -3,7 +3,7 @@
     <div class="card-image">
       <figure class="image relative hidden lg:block">
         <img :src="course.image" alt="course image" class="block mb-0">
-        <div class="absolute inset-0 flex justify-end items-end p-2 bg-transparent opacity-50 hover:bg-black">
+        <div class="absolute inset-0 flex justify-end items-end p-2 bg-transparent">
           <fa :icon="['far', 'bookmark']" class="mr-2 text-xl text-white cursor-pointer hover:text-yellow-500" />
           <fa
             :icon="['fas', 'shopping-cart']"
@@ -84,8 +84,14 @@ export default {
 }
 
 .card-image {
-  &:hover svg {
-    display: block;
+  &:hover {
+    img {
+      filter: brightness(0.5);
+    }
+
+    svg {
+      display: block;
+    }
   }
 
   svg {
