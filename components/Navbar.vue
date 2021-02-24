@@ -130,7 +130,7 @@ export default {
       return this.$store.getters.userInfo
     },
     /**
-     * 已經加入購物車的編號列表
+     * 購物車資訊
      * @returns {array}
      */
     cartInfo () {

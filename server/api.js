@@ -67,4 +67,21 @@ app.post('/carts', async (request, response) => {
   }
 })
 
+app.delete('/carts', async (request, response) => {
+  const { accessToken, tokenType, data } = request.body
+  const type = tokenType[0].toUpperCase() + tokenType.slice(1)
+  try {
+    const { data: responseData } = await axios({
+      baseURL: env.API_URL,
+      url: '/carts',
+      method: 'delete',
+      headers: { authorization: `${type} ${accessToken}` },
+      data
+    })
+    response.json({ ...responseData })
+  } catch {
+    response.json({})
+  }
+})
+
 module.exports = app

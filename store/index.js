@@ -69,7 +69,7 @@ export const mutations = {
 }
 
 export const actions = {
-  nuxtServerInit ({ commit, dispatch }, context) {
+  async nuxtServerInit ({ commit, dispatch }, context) {
     if (context.app.$cookies.get('access_token')) {
       const accessToken = context.app.$cookies.get('access_token')
       const tokenType = context.app.$cookies.get('token_type')
@@ -78,6 +78,7 @@ export const actions = {
       const avatar = context.app.$cookies.get('avatar')
       commit('SET_USER_LOGGEDIN', { access_token: accessToken, token_type: tokenType, expires_in: expiresIn })
       commit('SET_USER_INFO', { username, avatar })
+      await dispatch('cart/getUserCart')
     }
   },
   async getUserInfo ({ commit, getters }) {

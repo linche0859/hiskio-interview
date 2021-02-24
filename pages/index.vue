@@ -2,7 +2,7 @@
   <div class="container">
     <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 px-4 lg:px-0 list-none">
       <li v-for="course in courseList" :key="course.id">
-        <CardCourse :course="course" @add-cart="addCart" />
+        <CardCourse :course="course" @change-cart="changeCart" />
       </li>
     </ul>
   </div>
@@ -42,17 +42,19 @@ export default {
       courseList: []
     }
   },
-  fetch (context) {
-    if (context.store.getters.isUserLoggedIn) {
-      return context.store.dispatch('cart/getUserCart')
-    }
-  },
   head () {
     return {
       title: '首頁'
     }
   },
   computed: {
+    /**
+     * 使用者是否登入
+     * @returns {boolean}
+     */
+    isUserLoggedIn () {
+      return this.$store.getters.isUserLoggedIn
+    },
     /**
      * 已經加入購物車的編號列表
      * @returns {array}
@@ -79,6 +81,37 @@ export default {
       } catch (e) {
         if (e.message) { alert(e.message) }
       }
+    },
+    /**
+     * 移除購物車項目事件
+     * @param {number} courseId - 課程編號
+     */
+    async deleteCart (courseId) {
+      if (!this.isUserLoggedIn) {
+        this.$store.dispatch('cart/addCart', {
+          items: this.addedCartIds
+            .filter(item => parseInt(item) !== courseId)
+            .map(item => ({ id: parseInt(item), coupon: '' })),
+          coupon: ''
+        })
+        return
+      }
+      await this.$store.dispatch('cart/deleteCart', {
+        items: [{ id: courseId, coupon: '' }]
+      })
+      await this.$store.dispatch('cart/getUserCart')
+    },
+    /**
+     * 變更購物車事件
+     * @param {boolean} isAddedCart - 是否已經加入購物車
+     * @param {number} courseId - 課程編號
+     */
+    changeCart ({ isAddedCart, courseId }) {
+      if (isAddedCart) {
+        this.deleteCart(courseId)
+        return
+      }
+      this.addCart(courseId)
     }
   }
 }

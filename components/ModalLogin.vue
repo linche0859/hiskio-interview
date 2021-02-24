@@ -66,7 +66,7 @@
       <form>
         <div v-show="currentAction === 'login'" class="field mx-auto w-80">
           <p class="control has-icons-left">
-            <input v-model="form.id" class="input border-0 shadow-none bg-gray-100" type="text" placeholder="請輸入 HISKIO ID">
+            <input v-model.trim="form.id" class="input border-0 shadow-none bg-gray-100" type="text" placeholder="請輸入 HISKIO ID">
             <span class="icon is-small is-left">
               <fa :icon="['fas', 'user-circle']" class="text-gray-300" />
             </span>
@@ -74,7 +74,13 @@
         </div>
         <div v-show="currentAction === 'login'" class="field mx-auto mb-5 w-80">
           <p class="control has-icons-left">
-            <input v-model="form.password" class="input border-0 shadow-none bg-gray-100" type="password" placeholder="請輸入登入密碼">
+            <input
+              v-model.trim="form.password"
+              class="input border-0 shadow-none bg-gray-100"
+              type="password"
+              placeholder="請輸入登入密碼"
+              @keyup.enter="$emit('login', form)"
+            >
             <span class="icon is-small is-left">
               <fa :icon="['fas', 'lock']" class="text-gray-300" />
             </span>

@@ -41,7 +41,11 @@
             <span class="px-1 border border-gray-500 rounded">募資課程</span>
           </p>
         </div>
-        <fa :icon="['fas', 'trash']" class="self-start text-xl text-gray-300 cursor-pointer hover:text-red-500" />
+        <fa
+          :icon="['fas', 'trash']"
+          class="self-start text-xl text-gray-300 cursor-pointer hover:text-red-500"
+          @click="deleteCart(item.id)"
+        />
       </li>
     </ul>
     <a
@@ -75,11 +79,39 @@ export default {
   },
   computed: {
     /**
-     * 已經加入購物車的編號列表
+     * 使用者是否登入
+     * @returns {boolean}
+     */
+    isUserLoggedIn () {
+      return this.$store.getters.isUserLoggedIn
+    },
+    /**
+     * 購物車資訊
      * @returns {array}
      */
     cartInfo () {
       return this.$store.getters['cart/cartInfo']
+    }
+  },
+  methods: {
+    /**
+     * 移除購物車項目事件
+     * @param {string} courseId - 課程編號
+     */
+    async deleteCart (courseId) {
+      if (!this.isUserLoggedIn) {
+        this.$store.dispatch('cart/addCart', {
+          items: this.cartInfo.data
+            .filter(item => item.id !== courseId)
+            .map(item => ({ id: parseInt(item.id), coupon: '' })),
+          coupon: ''
+        })
+        return
+      }
+      await this.$store.dispatch('cart/deleteCart', {
+        items: [{ id: courseId, coupon: '' }]
+      })
+      await this.$store.dispatch('cart/getUserCart')
     }
   }
 }

@@ -30,7 +30,7 @@ export const mutations = {
 }
 
 export const actions = {
-  async getUserCart ({ commit, dispatch }) {
+  async getUserCart ({ dispatch }) {
     await dispatch('addCart', {
       items: [],
       coupon: ''
@@ -47,5 +47,16 @@ export const actions = {
       }
     })
     commit('SET_CART', data)
+  },
+  async deleteCart ({ rootGetters }, payload) {
+    await this.$axios({
+      baseURL: process.env.WEB_URL,
+      url: '/api/carts',
+      method: 'delete',
+      data: {
+        ...rootGetters.token,
+        data: payload
+      }
+    })
   }
 }

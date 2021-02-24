@@ -7,8 +7,9 @@
           <fa :icon="['far', 'bookmark']" class="mr-2 text-xl text-white cursor-pointer hover:text-yellow-500" />
           <fa
             :icon="['fas', 'shopping-cart']"
-            class="text-xl text-white cursor-pointer hover:text-yellow-500"
-            @click="$emit('add-cart', course.id)"
+            class="text-xl cursor-pointer hover:text-yellow-500"
+            :class="[{'text-white': !isAddedCart}, {'text-yellow-500': isAddedCart}]"
+            @click="$emit('change-cart', {courseId: course.id, isAddedCart})"
           />
         </div>
       </figure>
@@ -72,7 +73,14 @@ export default {
     fundsRaisedPercenatge () {
       const percent = (this.course.consumers / this.course.fundraising_tickets) * 100
       if (percent > 100) { return 100 }
-      return percent
+      return Math.round(percent)
+    },
+    /**
+     * 是否已經加入購物車
+     * @returns {boolean}
+     */
+    isAddedCart () {
+      return this.$store.getters['cart/cartInfo'].data.some(item => parseInt(item.id) === this.course.id)
     }
   }
 }
