@@ -26,6 +26,7 @@
 </template>
 
 <script>
+import { userComputed, userMethods, cartMethods } from '~/assets/js/store-help'
 import Navbar from '~/components/Navbar'
 import ModalLogin from '~/components/ModalLogin'
 import AsideLoggedIn from '~/components/AsideLoggedIn'
@@ -60,12 +61,13 @@ export default {
     }
   },
   computed: {
+    ...userComputed,
     /**
      * 使用者是否登入
      * @returns {boolean}
      */
     isUserLoggedIn () {
-      return this.$store.getters.isUserLoggedIn
+      return this.userInfo.isUserLoggedIn
     }
   },
   watch: {
@@ -75,34 +77,34 @@ export default {
     }
   },
   methods: {
+    ...userMethods,
+    ...cartMethods,
     /**
      * 登入事件
      * @param {object} data - 登入資訊
      */
     async login (data) {
       try {
-        await this.$store.dispatch('login', {
+        await this['store/login']({
           account: data.id,
           password: data.password
         })
-        await this.$store.dispatch('getUserInfo')
-        await this.$store.dispatch('cart/getUserCart')
+        await this['store/getUserInfo']()
+        await this['store/getUserCart']()
         this.changeModalStatus()
       } catch (e) {
-        if (typeof e.message === 'string') {
-          alert(e.message)
-          return
+        if (typeof e.message !== 'string') {
+          const { message: { account = '', password = '' } } = e
+          alert(account || password)
         }
-        const { message: { account = '', password = '' } } = e
-        alert(account || password)
       }
     },
     /**
      * 登出事件
      */
     async logout () {
-      await this.$store.dispatch('logout', {})
-      await this.$store.dispatch('cart/getUserCart')
+      await this['store/logout']({})
+      await this['store/getUserCart']()
     },
     /**
      * 變更 modal 的狀態

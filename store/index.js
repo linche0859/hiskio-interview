@@ -17,14 +17,15 @@ export const state = () => ({
 })
 
 export const getters = {
-  isUserLoggedIn: (state) => {
-    return state.isUserLoggedIn
-  },
   token: (state) => {
     return { expiresIn: state.expiresIn, accessToken: state.accessToken, tokenType: state.tokenType }
   },
   userInfo: (state) => {
-    return { username: state.username, avatar: state.avatar }
+    return {
+      isUserLoggedIn: state.isUserLoggedIn,
+      username: state.username,
+      avatar: state.avatar
+    }
   }
 }
 

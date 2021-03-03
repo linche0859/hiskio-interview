@@ -53,6 +53,8 @@
 </template>
 
 <script>
+import { cartComputed } from '~/assets/js/store-help'
+
 /**
  * 課程的卡片組件
  */
@@ -66,6 +68,7 @@ export default {
     }
   },
   computed: {
+    ...cartComputed,
     /**
      * 募資的百分比
      * @returns {number}
@@ -80,7 +83,7 @@ export default {
      * @returns {boolean}
      */
     isAddedCart () {
-      return this.$store.getters['cart/cartInfo'].data.some(item => parseInt(item.id) === this.course.id)
+      return this.cartInfo.data.some(item => parseInt(item.id) === this.course.id)
     }
   }
 }

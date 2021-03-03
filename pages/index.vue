@@ -9,6 +9,7 @@
 </template>
 
 <script>
+import { userComputed, cartComputed, cartMethods } from '~/assets/js/store-help'
 import CardCourse from '~/components/CardCourse'
 
 /**
@@ -20,17 +21,13 @@ export default {
     CardCourse
   },
   async asyncData ({ $axios }) {
-    try {
-      const { data } = await $axios({
-        baseURL: process.env.API_URL,
-        url: '/courses/fundraising',
-        method: 'get'
-      })
-      return {
-        courseList: data
-      }
-    } catch (e) {
-      if (e.message) { alert(e.message) }
+    const { data } = await $axios({
+      baseURL: process.env.API_URL,
+      url: '/courses/fundraising',
+      method: 'get'
+    })
+    return {
+      courseList: data ?? []
     }
   },
   data () {
@@ -48,39 +45,38 @@ export default {
     }
   },
   computed: {
+    ...userComputed,
+    ...cartComputed,
     /**
      * 使用者是否登入
      * @returns {boolean}
      */
     isUserLoggedIn () {
-      return this.$store.getters.isUserLoggedIn
+      return this.userInfo.isUserLoggedIn
     },
     /**
      * 已經加入購物車的編號列表
      * @returns {array}
      */
     addedCartIds () {
-      return this.$store.getters['cart/cartInfo'].data.map(item => item.id)
+      return this.cartInfo.data.map(item => item.id)
     }
   },
   methods: {
+    ...cartMethods,
     /**
      * 加入購物車事件
      * @param {number} courseId - 課程編號
      */
     async addCart (courseId) {
-      try {
-        const addedCartItems = this.addedCartIds.map(id => ({ id, coupon: '' }))
-        await this.$store.dispatch('cart/addCart', {
-          items: [
-            ...addedCartItems,
-            { id: courseId, coupon: '' }
-          ],
-          coupon: ''
-        })
-      } catch (e) {
-        if (e.message) { alert(e.message) }
-      }
+      const addedCartItems = this.addedCartIds.map(id => ({ id, coupon: '' }))
+      await this['store/addCart']({
+        items: [
+          ...addedCartItems,
+          { id: courseId, coupon: '' }
+        ],
+        coupon: ''
+      })
     },
     /**
      * 移除購物車項目事件
@@ -88,7 +84,7 @@ export default {
      */
     async deleteCart (courseId) {
       if (!this.isUserLoggedIn) {
-        this.$store.dispatch('cart/addCart', {
+        this['store/addCart']({
           items: this.addedCartIds
             .filter(item => parseInt(item) !== courseId)
             .map(item => ({ id: parseInt(item), coupon: '' })),
@@ -96,10 +92,10 @@ export default {
         })
         return
       }
-      await this.$store.dispatch('cart/deleteCart', {
+      await this['store/deleteCart']({
         items: [{ id: courseId, coupon: '' }]
       })
-      await this.$store.dispatch('cart/getUserCart')
+      await this['store/getUserCart']()
     },
     /**
      * 變更購物車事件

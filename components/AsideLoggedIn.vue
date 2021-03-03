@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import { userComputed } from '~/assets/js/store-help'
 import AsideComponent from '~/components/Aside'
 
 /**
@@ -50,13 +51,7 @@ export default {
     }
   },
   computed: {
-    /**
-     * 使用者資訊
-     * @returns {object}
-     */
-    userInfo () {
-      return this.$store.getters.userInfo
-    }
+    ...userComputed
   }
 }
 </script>

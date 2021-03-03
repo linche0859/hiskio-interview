@@ -11,9 +11,13 @@ export default function ({ $axios, store, redirect, error }) {
   })
   $axios.onError((error) => {
     const code = parseInt(error.response && error.response.status)
-    if (code) {
-      return Promise.reject(error.response.data)
+    const errorData = code ? error.response.data : error.data
+    const message = errorData?.message ?? ''
+    // 只統一處理「純文字」的錯誤訊息
+    // 客製的錯誤訊息，由各組件實現
+    if (typeof message === 'string' && message && process.client) {
+      alert(message)
     }
-    return Promise.reject(error.data)
+    return Promise.reject(errorData)
   })
 }

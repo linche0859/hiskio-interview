@@ -100,6 +100,8 @@
 </template>
 
 <script>
+import { userComputed, cartComputed } from '~/assets/js/store-help'
+
 /**
  * 導覽列
  */
@@ -115,26 +117,14 @@ export default {
     }
   },
   computed: {
+    ...userComputed,
+    ...cartComputed,
     /**
      * 使用者是否登入
      * @returns {boolean}
      */
     isUserLoggedIn () {
-      return this.$store.getters.isUserLoggedIn
-    },
-    /**
-     * 使用者資訊
-     * @returns {object}
-     */
-    userInfo () {
-      return this.$store.getters.userInfo
-    },
-    /**
-     * 購物車資訊
-     * @returns {array}
-     */
-    cartInfo () {
-      return this.$store.getters['cart/cartInfo']
+      return this.userInfo.isUserLoggedIn
     }
   },
   watch: {

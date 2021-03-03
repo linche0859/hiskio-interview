@@ -60,6 +60,7 @@
 </template>
 
 <script>
+import { userComputed, cartComputed, cartMethods } from '~/assets/js/store-help'
 import AsideComponent from '~/components/Aside'
 
 /**
@@ -78,29 +79,25 @@ export default {
     }
   },
   computed: {
+    ...userComputed,
+    ...cartComputed,
     /**
      * 使用者是否登入
      * @returns {boolean}
      */
     isUserLoggedIn () {
-      return this.$store.getters.isUserLoggedIn
-    },
-    /**
-     * 購物車資訊
-     * @returns {array}
-     */
-    cartInfo () {
-      return this.$store.getters['cart/cartInfo']
+      return this.userInfo.isUserLoggedIn
     }
   },
   methods: {
+    ...cartMethods,
     /**
      * 移除購物車項目事件
      * @param {string} courseId - 課程編號
      */
     async deleteCart (courseId) {
       if (!this.isUserLoggedIn) {
-        this.$store.dispatch('cart/addCart', {
+        this['store/addCart']({
           items: this.cartInfo.data
             .filter(item => item.id !== courseId)
             .map(item => ({ id: parseInt(item.id), coupon: '' })),
@@ -108,10 +105,10 @@ export default {
         })
         return
       }
-      await this.$store.dispatch('cart/deleteCart', {
+      await this['store/deleteCart']({
         items: [{ id: courseId, coupon: '' }]
       })
-      await this.$store.dispatch('cart/getUserCart')
+      await this['store/getUserCart']()
     }
   }
 }
